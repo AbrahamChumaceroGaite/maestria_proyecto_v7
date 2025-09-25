@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Gestor de Contraseñas Seguro',
   description: 'Aplicación segura para gestionar y almacenar contraseñas con cifrado AES-256',
   keywords: ['gestor contraseñas', 'seguridad', 'cifrado', 'password manager'],
-  authors: [{ name: 'UCB San Pablo - Modulo 7 Fundamentos de Ciberseguridad' }],
+  authors: [{ name: 'UCB San Pablo - Fundamentos de Ciberseguridad' }],
   robots: 'noindex, nofollow',
   viewport: 'width=device-width, initial-scale=1',
 };
@@ -26,9 +26,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={inter.className}>
-        <div className="min-h-screen bg-background">
-          {children}
-        </div>
+        {children}
       </body>
     </html>
   );

@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { UserModel } from '../../../../lib/database/models';
-import { verifyMasterPassword } from '../../../../lib/crypto/hashing';
+import { hashMasterPassword, verifyMasterPassword } from '../../../../lib/crypto/hashing';
 import { createSession } from '../../../../lib/auth/session';
 import { loginSchema } from '../../../../lib/utils/validation';
 import { VALIDATION_MESSAGES } from '../../../../lib/utils/constants';
 import type { ApiResponse, AuthResponse } from '../../../../lib/types';
+import { generateSalt } from '../../../../lib/crypto/encryption';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -23,10 +24,42 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const user = UserModel.findByEmail(email);
     if (!user) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: VALIDATION_MESSAGES.INVALID_CREDENTIALS,
-      }, { status: 401 });
+      // Auto-registro: crear usuario si no existe
+      const masterPasswordHash = await hashMasterPassword(masterPassword);
+      const salt = generateSalt();
+      
+      const newUser = UserModel.create({
+        email,
+        masterPasswordHash,
+        salt,
+      });
+      
+      const token = createSession(newUser.id, newUser.email);
+      
+      const cookieStore = cookies();
+      cookieStore.set('session', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60,
+        path: '/',
+      });
+
+      const authResponse: AuthResponse = {
+        token,
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          createdAt: newUser.createdAt,
+          updatedAt: newUser.updatedAt,
+        },
+      };
+
+      return NextResponse.json<ApiResponse<AuthResponse>>({
+        success: true,
+        data: authResponse,
+        message: 'Usuario registrado exitosamente',
+      });
     }
 
     const isValidPassword = await verifyMasterPassword(masterPassword, user.masterPasswordHash);
