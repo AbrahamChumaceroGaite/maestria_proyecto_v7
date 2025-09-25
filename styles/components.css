@@ -1,0 +1,188 @@
+.password-manager-container {
+  @apply min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900;
+}
+
+.login-form-card {
+  @apply backdrop-blur-sm bg-slate-800/50 border border-slate-700/50 shadow-2xl;
+}
+
+.password-item-card {
+  @apply bg-slate-800/30 border-slate-700/30 hover:bg-slate-700/40 hover:border-slate-600/50 transition-all duration-300;
+}
+
+.password-item-card:hover {
+  @apply shadow-lg shadow-slate-900/20 scale-[1.01];
+}
+
+.service-icon {
+  @apply w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm;
+}
+
+.password-strength-meter {
+  @apply w-full h-1 bg-slate-700 rounded-full overflow-hidden;
+}
+
+.password-strength-fill {
+  @apply h-full transition-all duration-500 ease-out;
+}
+
+.strength-very-weak {
+  @apply bg-red-500 w-1/5;
+}
+
+.strength-weak {
+  @apply bg-orange-500 w-2/5;
+}
+
+.strength-fair {
+  @apply bg-yellow-500 w-3/5;
+}
+
+.strength-good {
+  @apply bg-green-500 w-4/5;
+}
+
+.strength-strong {
+  @apply bg-green-600 w-full;
+}
+
+.copy-success-animation {
+  animation: copySuccess 0.3s ease-in-out;
+}
+
+@keyframes copySuccess {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.password-reveal-animation {
+  animation: fadeInUp 0.2s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navigation-link {
+  @apply flex items-center px-4 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200;
+}
+
+.navigation-link.active {
+  @apply bg-slate-700/70 text-white border-l-2 border-blue-500;
+}
+
+.search-input {
+  @apply bg-slate-800/50 border-slate-700/50 focus:border-blue-500/50 focus:bg-slate-800/80;
+}
+
+.button-primary {
+  @apply bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 active:scale-95 transition-all duration-200;
+}
+
+.button-secondary {
+  @apply bg-slate-700/50 hover:bg-slate-700/80 border-slate-600/50 hover:border-slate-500/50 transition-all duration-200;
+}
+
+.button-danger {
+  @apply bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-95 transition-all duration-200;
+}
+
+.modal-overlay {
+  @apply fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50;
+}
+
+.modal-content {
+  @apply bg-slate-800 border border-slate-700/50 shadow-2xl;
+}
+
+.form-input {
+  @apply bg-slate-800/50 border-slate-700/50 focus:border-blue-500/50 focus:bg-slate-800/80 text-white placeholder-slate-400;
+}
+
+.form-label {
+  @apply text-slate-200 font-medium text-sm;
+}
+
+.error-message {
+  @apply text-red-400 text-sm;
+}
+
+.success-message {
+  @apply text-green-400 text-sm;
+}
+
+.loading-spinner {
+  @apply animate-spin w-4 h-4 border-2 border-slate-600 border-t-blue-500 rounded-full;
+}
+
+.skeleton-loader {
+  @apply animate-pulse bg-slate-700/30 rounded;
+}
+
+.tooltip {
+  @apply absolute z-10 px-2 py-1 text-xs text-white bg-slate-900 border border-slate-700 rounded shadow-lg whitespace-nowrap;
+}
+
+.password-generator-slider {
+  @apply w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer;
+}
+
+.password-generator-slider::-webkit-slider-thumb {
+  @apply appearance-none w-4 h-4 bg-blue-500 rounded-full cursor-pointer shadow-lg;
+}
+
+.password-generator-slider::-moz-range-thumb {
+  @apply w-4 h-4 bg-blue-500 rounded-full cursor-pointer border-0 shadow-lg;
+}
+
+.checkbox-custom {
+  @apply w-4 h-4 text-blue-600 bg-slate-800 border-slate-600 rounded focus:ring-blue-500 focus:ring-2;
+}
+
+.security-tip-card {
+  @apply bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-800/30 rounded-lg p-4;
+}
+
+.password-card-hover-effect {
+  @apply relative overflow-hidden;
+}
+
+.password-card-hover-effect::before {
+  @apply content-[''] absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/10 to-transparent transform translate-x-[-100%] transition-transform duration-500;
+}
+
+.password-card-hover-effect:hover::before {
+  @apply translate-x-[100%];
+}
+
+.empty-state {
+  @apply text-center py-12 px-4;
+}
+
+.empty-state-icon {
+  @apply w-16 h-16 mx-auto mb-4 text-slate-500;
+}
+
+.stats-card {
+  @apply bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/30 rounded-xl p-6;
+}
+
+.stats-number {
+  @apply text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent;
+}
+
+.breadcrumb {
+  @apply flex items-center space-x-2 text-sm text-slate-400;
+}
+
+.breadcrumb-separator {
+  @apply text-slate-600;
+}

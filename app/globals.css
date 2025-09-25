@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    @apply dark;
+  }
+  
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 90%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --primary-dark: 210 40% 80%;
+    --primary-light: 210 40% 95%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .password-strength-indicator {
+    @apply w-full h-2 bg-muted rounded-full overflow-hidden;
+  }
+  
+  .password-strength-bar {
+    @apply h-full transition-all duration-300;
+  }
+  
+  .password-strength-weak {
+    @apply bg-red-500 w-1/5;
+  }
+  
+  .password-strength-fair {
+    @apply bg-orange-500 w-2/5;
+  }
+  
+  .password-strength-good {
+    @apply bg-yellow-500 w-3/5;
+  }
+  
+  .password-strength-strong {
+    @apply bg-green-500 w-4/5;
+  }
+  
+  .password-strength-very-strong {
+    @apply bg-green-600 w-full;
+  }
+
+  .skeleton {
+    @apply animate-pulse bg-muted rounded;
+  }
+
+  .loading-spinner {
+    @apply animate-spin rounded-full border-2 border-muted border-t-primary;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+input[type="range"] {
+  @apply w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  @apply appearance-none w-4 h-4 bg-primary rounded-full cursor-pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  @apply w-4 h-4 bg-primary rounded-full cursor-pointer border-0;
+}
+
+input[type="checkbox"] {
+  @apply w-4 h-4 text-primary bg-muted border-border rounded focus:ring-primary focus:ring-2;
+}
+
+input[type="checkbox"]:checked {
+  @apply bg-primary border-primary;
+}
+
+kbd {
+  @apply inline-flex items-center px-1.5 py-0.5 text-xs font-semibold text-muted-foreground bg-muted border border-border rounded;
+}
+
+.password-input-wrapper {
+  @apply relative;
+}
+
+.password-toggle-button {
+  @apply absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors;
+}
+
+.copy-button {
+  @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+}
+
+.service-favicon {
+  @apply w-5 h-5 rounded-sm;
+}
+
+.truncate-multiline {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.password-card {
+  @apply transition-all duration-200 hover:shadow-lg hover:scale-[1.01];
+}
+
+.gradient-border {
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-light)));
+  padding: 1px;
+  border-radius: calc(var(--radius) + 1px);
+}
+
+.gradient-border > * {
+  @apply bg-background rounded-md;
+}
