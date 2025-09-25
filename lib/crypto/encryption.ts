@@ -21,24 +21,31 @@ export function generateIV(): string {
 }
 
 export function encrypt(plaintext: string, key: string): EncryptionResult {
-  const iv = generateIV();
-  const cipher = crypto.createCipher(ENCRYPTION_CONFIG.ALGORITHM, key);
-  cipher.setAutoPadding(true);
+  const iv = crypto.randomBytes(12).toString('hex');
+  const keyBuffer = crypto.createHash('sha256').update(key).digest();
+  
+  const cipher = crypto.createCipheriv('aes-256-gcm', keyBuffer, Buffer.from(iv, 'hex'));
   
   let encrypted = cipher.update(plaintext, 'utf8', 'hex');
   encrypted += cipher.final('hex');
   
+  const authTag = cipher.getAuthTag().toString('hex');
+  
   return {
-    encrypted,
+    encrypted: encrypted + authTag,
     iv
   };
 }
 
 export function decrypt({ encrypted, iv, key }: DecryptionParams): string {
-  const decipher = crypto.createDecipher(ENCRYPTION_CONFIG.ALGORITHM, key);
-  decipher.setAutoPadding(true);
+  const keyBuffer = crypto.createHash('sha256').update(key).digest();
+  const authTag = encrypted.slice(-32);
+  const cipherText = encrypted.slice(0, -32);
   
-  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  const decipher = crypto.createDecipheriv('aes-256-gcm', keyBuffer, Buffer.from(iv, 'hex'));
+  decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+  
+  let decrypted = decipher.update(cipherText, 'hex', 'utf8');
   decrypted += decipher.final('utf8');
   
   return decrypted;

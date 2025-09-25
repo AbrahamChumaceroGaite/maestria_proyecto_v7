@@ -22,8 +22,8 @@ export interface Password {
 }
 
 export interface CreatePasswordRequest {
-  service: string;
-  username: string;
+  service?: string;
+  username?: string;
   password: string;
   url?: string;
   notes?: string;

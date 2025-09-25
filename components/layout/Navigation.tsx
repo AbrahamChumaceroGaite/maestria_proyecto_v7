@@ -22,7 +22,7 @@ const navigationItems: NavigationItem[] = [
     href: ROUTES.DASHBOARD,
     label: 'Mis contraseñas',
     icon: Key,
-    description: 'Ver y gestionar tus contraseñas guardadas',
+    description: 'Gestion Contraseñas',
   },
 ];
 

@@ -181,12 +181,7 @@ export function PasswordItem({ password, onEdit, onDeleted }: PasswordItemProps)
                 )}
 
                 <div className="text-xs">
-                  Creado: {formatDate(password.createdAt)}
-                  {password.updatedAt.getTime() !== password.createdAt.getTime() && (
-                    <span className="ml-2">
-                      • Modificado: {formatDate(password.updatedAt)}
-                    </span>
-                  )}
+                  Creado: {password.createdAt}
                 </div>
               </div>
             </div>

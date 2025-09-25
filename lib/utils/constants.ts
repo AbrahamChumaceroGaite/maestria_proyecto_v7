@@ -1,7 +1,7 @@
 export const ENCRYPTION_CONFIG = {
   ALGORITHM: 'aes-256-gcm',
   KEY_LENGTH: 32,
-  IV_LENGTH: 16,
+  IV_LENGTH: 12,
   TAG_LENGTH: 16,
   SALT_LENGTH: 32,
 } as const;

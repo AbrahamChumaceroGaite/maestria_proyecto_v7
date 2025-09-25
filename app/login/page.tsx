@@ -31,7 +31,7 @@ export default function LoginPage() {
         
         <div className="text-center space-y-2">
           <p className="text-sm text-muted-foreground">
-            ¿Primera vez? Crea tu cuenta con tu primera contraseña
+            Crea tu cuenta con tu primera contraseña, no hay formulario de registro
           </p>
           <p className="text-xs text-muted-foreground">
             Proyecto - Fundamentos de Ciberseguridad

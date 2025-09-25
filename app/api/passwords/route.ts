@@ -4,27 +4,25 @@ import { encryptPassword, decryptPassword } from '../../../lib/crypto/encryption
 import { withAuth, type AuthenticatedRequest } from '../../../lib/auth/middleware';
 import { createPasswordSchema } from '../../../lib/utils/validation';
 import { VALIDATION_MESSAGES } from '../../../lib/utils/constants';
-import type { ApiResponse, Password } from '../../../lib/types';
+import type { ApiResponse, Password, CreatePasswordRequest } from '../../../lib/types';
 
 async function handleGET(req: AuthenticatedRequest): Promise<NextResponse> {
   try {
     const userId = req.user!.id;
     const { searchParams } = new URL(req.url);
     const search = searchParams.get('search');
-
     let passwords: Password[];
-    
+   
     if (search) {
       passwords = PasswordModel.search(userId, search);
     } else {
       passwords = PasswordModel.findByUserId(userId);
     }
-
+    
     return NextResponse.json<ApiResponse<Password[]>>({
       success: true,
       data: passwords,
     });
-
   } catch (error) {
     console.error('Get passwords error:', error);
     return NextResponse.json<ApiResponse>({
@@ -38,7 +36,7 @@ async function handlePOST(req: AuthenticatedRequest): Promise<NextResponse> {
   try {
     const body = await req.json();
     const userId = req.user!.id;
-
+    
     const validationResult = createPasswordSchema.safeParse(body);
     if (!validationResult.success) {
       return NextResponse.json<ApiResponse>({
@@ -56,17 +54,35 @@ async function handlePOST(req: AuthenticatedRequest): Promise<NextResponse> {
     }
 
     const { password: plainPassword, ...passwordData } = validationResult.data;
+    
+    // Ensure all required fields are present for CreatePasswordRequest
+    const createPasswordRequest: CreatePasswordRequest = {
+      service: passwordData.service || '',
+      username: passwordData.username || '',
+      password: plainPassword,
+      url: passwordData.url,
+      notes: passwordData.notes,
+    };
 
-    const encryptedData = encryptPassword(plainPassword, plainPassword, user.salt);
-
-    const createdPassword = PasswordModel.create(userId, passwordData, encryptedData);
+    const encryptionResult = encryptPassword(plainPassword, plainPassword, user.salt);
+    
+    // Map EncryptionResult to the expected format
+    const encryptedData = {
+      encryptedPassword: encryptionResult.encrypted,
+      iv: encryptionResult.iv
+    };
+    
+    const createdPassword = PasswordModel.create(
+      userId, 
+      createPasswordRequest, 
+      encryptedData
+    );
 
     return NextResponse.json<ApiResponse<Password>>({
       success: true,
       data: createdPassword,
       message: 'Contraseña guardada exitosamente',
     }, { status: 201 });
-
   } catch (error) {
     console.error('Create password error:', error);
     return NextResponse.json<ApiResponse>({
