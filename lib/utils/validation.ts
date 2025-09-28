@@ -35,8 +35,8 @@ export const createPasswordSchema = z.object({
   notes: z.string().max(500).optional(),
 });
 
+// Corrección: hacer el ID opcional para la validación
 export const updatePasswordSchema = z.object({
-  id: z.string().uuid(),
   service: z.string().min(1).optional(),
   username: z.string().min(1).optional(),
   password: passwordSchema.optional(),
@@ -51,7 +51,7 @@ export const generatePasswordSchema = z.object({
   includeNumbers: z.boolean(),
   includeSymbols: z.boolean(),
   excludeSimilar: z.boolean(),
-}) satisfies z.ZodSchema<GeneratePasswordOptions>;
+});
 
 export function validatePassword(password: string): PasswordStrength {
   const requirements = {

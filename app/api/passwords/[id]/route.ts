@@ -5,7 +5,7 @@ import { withAuth, type AuthenticatedRequest } from '../../../../lib/auth/middle
 import { updatePasswordSchema } from '../../../../lib/utils/validation';
 import { isValidUUID } from '../../../../lib/utils/validation';
 import { VALIDATION_MESSAGES } from '../../../../lib/utils/constants';
-import type { ApiResponse, Password } from '../../../../lib/types';
+import type { ApiResponse } from '../../../../lib/types';
 
 interface RouteParams {
   params: {
@@ -13,10 +13,10 @@ interface RouteParams {
   };
 }
 
-async function handleGET(req: AuthenticatedRequest, { params }: RouteParams): Promise<NextResponse> {
+async function handleGET(req: AuthenticatedRequest, context: RouteParams): Promise<NextResponse> {
   try {
     const userId = req.user!.id;
-    const passwordId = params.id;
+    const passwordId = context.params.id;
 
     if (!isValidUUID(passwordId)) {
       return NextResponse.json<ApiResponse>({
@@ -42,10 +42,11 @@ async function handleGET(req: AuthenticatedRequest, { params }: RouteParams): Pr
     }
 
     try {
+      // Nota: Necesitas implementar la obtención de la master password
       const decryptedPassword = decryptPassword(
         password.encryptedPassword,
         password.iv,
-        password.encryptedPassword.substring(0, 16),
+        'dummy-master-password', // IMPLEMENTAR: obtener master password del usuario
         user.salt
       );
 
@@ -69,11 +70,11 @@ async function handleGET(req: AuthenticatedRequest, { params }: RouteParams): Pr
   }
 }
 
-async function handlePUT(req: AuthenticatedRequest, { params }: RouteParams): Promise<NextResponse> {
+async function handlePUT(req: AuthenticatedRequest, context: RouteParams): Promise<NextResponse> {
   try {
     const body = await req.json();
     const userId = req.user!.id;
-    const passwordId = params.id;
+    const passwordId = context.params.id;
 
     if (!isValidUUID(passwordId)) {
       return NextResponse.json<ApiResponse>({
@@ -82,7 +83,7 @@ async function handlePUT(req: AuthenticatedRequest, { params }: RouteParams): Pr
       }, { status: 400 });
     }
 
-    const validationResult = updatePasswordSchema.safeParse({ ...body, id: passwordId });
+    const validationResult = updatePasswordSchema.safeParse(body);
     if (!validationResult.success) {
       return NextResponse.json<ApiResponse>({
         success: false,
@@ -110,7 +111,8 @@ async function handlePUT(req: AuthenticatedRequest, { params }: RouteParams): Pr
         }, { status: 404 });
       }
 
-      encryptedData = encryptPassword(newPlainPassword, newPlainPassword, user.salt);
+      // IMPLEMENTAR: obtener master password del usuario
+      encryptedData = encryptPassword(newPlainPassword, 'dummy-master-password', user.salt);
     }
 
     const success = PasswordModel.update(passwordId, userId, updateData, encryptedData);
@@ -136,10 +138,10 @@ async function handlePUT(req: AuthenticatedRequest, { params }: RouteParams): Pr
   }
 }
 
-async function handleDELETE(req: AuthenticatedRequest, { params }: RouteParams): Promise<NextResponse> {
+async function handleDELETE(req: AuthenticatedRequest, context: RouteParams): Promise<NextResponse> {
   try {
     const userId = req.user!.id;
-    const passwordId = params.id;
+    const passwordId = context.params.id;
 
     if (!isValidUUID(passwordId)) {
       return NextResponse.json<ApiResponse>({

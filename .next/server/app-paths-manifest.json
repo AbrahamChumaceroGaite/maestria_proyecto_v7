@@ -1,3 +1,9 @@
 {
-  "/api/passwords/[id]/route": "app/api/passwords/[id]/route.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/passwords/export/route": "app/api/passwords/export/route.js",
+  "/api/passwords/import/route": "app/api/passwords/import/route.js",
+  "/api/passwords/route": "app/api/passwords/route.js",
+  "/login/page": "app/login/page.js",
+  "/api/auth/logout/route": "app/api/auth/logout/route.js",
+  "/dashboard/page": "app/dashboard/page.js"
 }

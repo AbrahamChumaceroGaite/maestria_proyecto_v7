@@ -1,12 +1,18 @@
 import Database from 'better-sqlite3';
 import { DATABASE_CONFIG } from '../utils/constants';
 import path from 'path';
+import fs from 'fs';
 
 let db: Database.Database | null = null;
 
 export function getDatabase(): Database.Database {
   if (!db) {
-    const dbPath = path.join(process.cwd(), 'data', DATABASE_CONFIG.FILENAME);
+    const dataDir = path.join(process.cwd(), 'data');
+    const dbPath = path.join(dataDir, DATABASE_CONFIG.FILENAME);
+    
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
     
     db = new Database(dbPath, {
       verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
@@ -34,8 +40,8 @@ function initializeTables(): void {
       email TEXT UNIQUE NOT NULL,
       master_password_hash TEXT NOT NULL,
       salt TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
   `;
   
@@ -49,8 +55,8 @@ function initializeTables(): void {
       iv TEXT NOT NULL,
       url TEXT,
       notes TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
     )
   `;

@@ -6,7 +6,6 @@ import { Button } from '../../components/ui/button';
 import { Card, CardContent } from '../../components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { API_ROUTES } from '../../lib/utils/constants';
-import { decryptPassword } from '../../lib/crypto/encryption';
 import type { Password, ApiResponse } from '../../lib/types';
 
 interface PasswordItemProps {
@@ -97,8 +96,8 @@ export function PasswordItem({ password, onEdit, onDeleted }: PasswordItemProps)
     }
   };
 
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('es-ES', {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-ES', {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
@@ -181,7 +180,7 @@ export function PasswordItem({ password, onEdit, onDeleted }: PasswordItemProps)
                 )}
 
                 <div className="text-xs">
-                  Creado: {password.createdAt}
+                  Creado: {formatDate(password.createdAt)}
                 </div>
               </div>
             </div>

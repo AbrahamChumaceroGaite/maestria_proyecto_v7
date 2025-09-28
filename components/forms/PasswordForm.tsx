@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Save, X } from 'lucide-react';
@@ -9,7 +9,7 @@ import { Input } from '../../components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { createPasswordSchema, updatePasswordSchema } from '../../lib/utils/validation';
 import { API_ROUTES } from '../../lib/utils/constants';
-import type { CreatePasswordRequest, UpdatePasswordRequest, Password, ApiResponse } from '../../lib/types';
+import type { CreatePasswordRequest, Password, ApiResponse } from '../../lib/types';
 
 interface PasswordFormProps {
   isOpen: boolean;
@@ -30,17 +30,22 @@ export function PasswordForm({ isOpen, onClose, onSuccess, password, isEditing =
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors }
   } = useForm<FormData>({
-    resolver: zodResolver(isEditing ? updatePasswordSchema : createPasswordSchema),
-    defaultValues: password ? {
-      service: password.service,
-      username: password.username,
-      password: '',
-      url: password.url || '',
-      notes: password.notes || '',
-    } : undefined,
+    resolver: zodResolver(isEditing ? createPasswordSchema : createPasswordSchema), // Both use same schema without ID
   });
+
+  // Set default values when editing
+  useEffect(() => {
+    if (password && isEditing) {
+      setValue('service', password.service);
+      setValue('username', password.username);
+      setValue('password', ''); // Always require password input
+      setValue('url', password.url || '');
+      setValue('notes', password.notes || '');
+    }
+  }, [password, isEditing, setValue]);
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);

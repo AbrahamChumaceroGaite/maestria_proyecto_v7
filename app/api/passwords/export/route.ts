@@ -3,6 +3,11 @@ import { PasswordModel } from '../../../../lib/database/models';
 import { withAuth, type AuthenticatedRequest } from '../../../../lib/auth/middleware';
 import type { ApiResponse } from '../../../../lib/types';
 
+// Para rutas sin parámetros dinámicos
+function withAuthSimple(handler: (req: AuthenticatedRequest) => Promise<NextResponse> | NextResponse) {
+  return withAuth((req: AuthenticatedRequest, context: any) => handler(req));
+}
+
 async function handleGET(req: AuthenticatedRequest): Promise<NextResponse> {
   try {
     const userId = req.user!.id;
@@ -38,4 +43,4 @@ async function handleGET(req: AuthenticatedRequest): Promise<NextResponse> {
   }
 }
 
-export const GET = withAuth(handleGET);
+export const GET = withAuthSimple(handleGET);

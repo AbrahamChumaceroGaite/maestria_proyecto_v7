@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PasswordModel, UserModel } from '../../../lib/database/models';
-import { encryptPassword, decryptPassword } from '../../../lib/crypto/encryption';
+import { encryptPassword } from '../../../lib/crypto/encryption';
 import { withAuth, type AuthenticatedRequest } from '../../../lib/auth/middleware';
 import { createPasswordSchema } from '../../../lib/utils/validation';
 import { VALIDATION_MESSAGES } from '../../../lib/utils/constants';
 import type { ApiResponse, Password, CreatePasswordRequest } from '../../../lib/types';
+
+function withAuthSimple(handler: (req: AuthenticatedRequest) => Promise<NextResponse> | NextResponse) {
+  return withAuth((req: AuthenticatedRequest, context: any) => handler(req));
+}
 
 async function handleGET(req: AuthenticatedRequest): Promise<NextResponse> {
   try {
@@ -55,18 +59,16 @@ async function handlePOST(req: AuthenticatedRequest): Promise<NextResponse> {
 
     const { password: plainPassword, ...passwordData } = validationResult.data;
     
-    // Ensure all required fields are present for CreatePasswordRequest
     const createPasswordRequest: CreatePasswordRequest = {
-      service: passwordData.service || '',
-      username: passwordData.username || '',
+      service: passwordData.service,
+      username: passwordData.username,
       password: plainPassword,
       url: passwordData.url,
       notes: passwordData.notes,
     };
 
-    const encryptionResult = encryptPassword(plainPassword, plainPassword, user.salt);
+    const encryptionResult = encryptPassword(plainPassword, 'dummy-master-password', user.salt);
     
-    // Map EncryptionResult to the expected format
     const encryptedData = {
       encryptedPassword: encryptionResult.encrypted,
       iv: encryptionResult.iv
@@ -92,5 +94,5 @@ async function handlePOST(req: AuthenticatedRequest): Promise<NextResponse> {
   }
 }
 
-export const GET = withAuth(handleGET);
-export const POST = withAuth(handlePOST);
+export const GET = withAuthSimple(handleGET);
+export const POST = withAuthSimple(handlePOST);

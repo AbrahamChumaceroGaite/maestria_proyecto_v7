@@ -1,3 +1,4 @@
+// lib/database/models.ts - Correcciones
 import { getDatabase } from './connection';
 import type { User, Password, CreatePasswordRequest, UpdatePasswordRequest } from '../types';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,14 +11,14 @@ export class UserModel {
   }): User {
     const db = getDatabase();
     const id = uuidv4();
-    const now = new Date();
+    const now = new Date().toISOString();
     
     const stmt = db.prepare(`
       INSERT INTO users (id, email, master_password_hash, salt, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?)
     `);
     
-    stmt.run(id, data.email, data.masterPasswordHash, data.salt, now.toISOString(), now.toISOString());
+    stmt.run(id, data.email, data.masterPasswordHash, data.salt, now, now);
     
     return {
       id,
@@ -44,8 +45,8 @@ export class UserModel {
       email: row.email,
       masterPasswordHash: row.master_password_hash,
       salt: row.salt,
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
     };
   }
   
@@ -64,8 +65,8 @@ export class UserModel {
       email: row.email,
       masterPasswordHash: row.master_password_hash,
       salt: row.salt,
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
     };
   }
 }
@@ -77,7 +78,7 @@ export class PasswordModel {
   }): Password {
     const db = getDatabase();
     const id = uuidv4();
-    const now = new Date();
+    const now = new Date().toISOString();
     
     const stmt = db.prepare(`
       INSERT INTO passwords (id, user_id, service, username, encrypted_password, iv, url, notes, created_at, updated_at)
@@ -93,8 +94,8 @@ export class PasswordModel {
       encryptedData.iv,
       data.url || null,
       data.notes || null,
-      now.toISOString(),
-      now.toISOString()
+      now,
+      now
     );
     
     return {
@@ -130,8 +131,8 @@ export class PasswordModel {
       iv: row.iv,
       url: row.url,
       notes: row.notes,
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
     }));
   }
   
@@ -154,8 +155,8 @@ export class PasswordModel {
       iv: row.iv,
       url: row.url,
       notes: row.notes,
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
     };
   }
   
@@ -239,8 +240,8 @@ export class PasswordModel {
       iv: row.iv,
       url: row.url,
       notes: row.notes,
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
     }));
   }
 }

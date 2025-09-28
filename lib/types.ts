@@ -1,11 +1,10 @@
- 
 export interface User {
   id: string;
   email: string;
   masterPasswordHash: string;
   salt: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Password {
@@ -17,13 +16,13 @@ export interface Password {
   iv: string;
   url?: string;
   notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreatePasswordRequest {
-  service?: string;
-  username?: string;
+  service: string;
+  username: string;
   password: string;
   url?: string;
   notes?: string;

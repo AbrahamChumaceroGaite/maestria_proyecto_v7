@@ -3,6 +3,10 @@ import { PasswordModel } from '../../../../lib/database/models';
 import { withAuth, type AuthenticatedRequest } from '../../../../lib/auth/middleware';
 import type { ApiResponse } from '../../../../lib/types';
 
+function withAuthSimple(handler: (req: AuthenticatedRequest) => Promise<NextResponse> | NextResponse) {
+  return withAuth((req: AuthenticatedRequest, context: any) => handler(req));
+}
+
 async function handlePOST(req: AuthenticatedRequest): Promise<NextResponse> {
   try {
     const userId = req.user!.id;
@@ -30,16 +34,20 @@ async function handlePOST(req: AuthenticatedRequest): Promise<NextResponse> {
     
     for (const passwordData of importData.passwords) {
       try {
-        await PasswordModel.create(userId, {
+        const createRequest = {
           service: passwordData.service,
           username: passwordData.username,
-          password: '', // Will be handled differently for imports
+          password: '',
           url: passwordData.url,
           notes: passwordData.notes,
-        }, {
+        };
+
+        const encryptedData = {
           encryptedPassword: passwordData.encrypted_password,
           iv: passwordData.iv,
-        });
+        };
+
+        PasswordModel.create(userId, createRequest, encryptedData);
         importedCount++;
       } catch (error) {
         console.error('Error importing password:', error);
@@ -60,4 +68,4 @@ async function handlePOST(req: AuthenticatedRequest): Promise<NextResponse> {
   }
 }
 
-export const POST = withAuth(handlePOST);
+export const POST = withAuthSimple(handlePOST);

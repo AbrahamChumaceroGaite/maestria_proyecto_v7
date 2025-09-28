@@ -7,8 +7,10 @@ export interface AuthenticatedRequest extends NextRequest {
   user?: SessionUser;
 }
 
-export function withAuth(handler: (req: AuthenticatedRequest) => Promise<NextResponse> | NextResponse) {
-  return async (req: NextRequest): Promise<NextResponse> => {
+export function withAuth<T extends Record<string, any>>(
+  handler: (req: AuthenticatedRequest, context: T) => Promise<NextResponse> | NextResponse
+) {
+  return async (req: NextRequest, context: T): Promise<NextResponse> => {
     const token = req.cookies.get('session')?.value;
     
     if (!token) {
@@ -37,7 +39,7 @@ export function withAuth(handler: (req: AuthenticatedRequest) => Promise<NextRes
     const authReq = req as AuthenticatedRequest;
     authReq.user = session;
     
-    return handler(authReq);
+    return handler(authReq, context);
   };
 }
 
