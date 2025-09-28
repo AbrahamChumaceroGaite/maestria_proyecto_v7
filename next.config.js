@@ -4,7 +4,7 @@ const nextConfig = {
     serverComponentsExternalPackages: ['better-sqlite3'],
   },
   webpack: (config, { isServer }) => {
-    if (isServer) {
+    if (isServer) {z
       config.externals.push('better-sqlite3');
     }
     return config;
